@@ -8,7 +8,7 @@ module.exports={
 
         [
             data.first_name,
-            data.last_name,
+            data.last_name, 
             data.gender,
             data.email,
             data.password,
@@ -23,5 +23,61 @@ module.exports={
         }
             
         );
-    }
-}
+    },
+    getUsers: callBack =>{
+        pool.query(
+            `select id, firstName, lastName, email, gender, password, number from registration`,
+            [],
+            (error, results, fields) => {
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        );
+    },
+    getUserByUserId: (id, callBack )=>{
+        pool.query(
+            `select id, firstName, lastName, email, gender, password, number from registration where id = ?`,
+            [id],
+            (error, results, fields) => {
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null, results[0]);
+            }
+        );
+    },
+    updateUser: (data, callBack) =>{
+        pool.query(
+            `select registration set  firstName=?, lastName=?, email=?, gender=?, password=?, number=? where id = ?`,
+            [
+                data.first_name,
+                data.last_name,
+                data.gender,
+                data.email,
+                data.password,
+                data.number,
+                data.id
+            ],
+            (error, results, fields) => {
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null, results[0]);
+            }
+        );
+    },
+    deleteUser: (data, callBack )=>{
+        pool.query(
+            `delete from registration where id = ?`,
+            [data.id],
+            (error, results, fields) => {
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null, results[0]);
+            }
+        );
+    },
+};
